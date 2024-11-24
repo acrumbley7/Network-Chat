@@ -45,7 +45,7 @@ def handle_server_send(client_socket):
             message = message_queue.get()
             client_socket.sendall(message)
 
-def handle_server_recv(client_socket):
+def handle_server_recv(client_socket, input_thread, send_thread):
     global message_queue
     buf = bytearray()
     while True:
@@ -75,7 +75,7 @@ def start_client(server_ip, server_port, username):
         print("Connected to {} on port {}".format(server_ip, server_port), flush=True)
         input_thread = threading.Thread(target=handle_input)
         send_thread = threading.Thread(target=handle_server_send, args=(client_socket,))
-        recv_thread = threading.Thread(target=handle_server_recv, args=(client_socket))
+        recv_thread = threading.Thread(target=handle_server_recv, args=(client_socket,input_thread, send_thread))
         input_thread.start()
         send_thread.start()
         recv_thread.start()

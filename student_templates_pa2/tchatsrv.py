@@ -195,7 +195,7 @@ def handle_session(user: User):
             buf.clear()
             data.clear()
 
-def handle_new_client(user_socket):
+def handle_new_client(user_socket, user_addr):
     global users
     buf = bytes()
     while True:
@@ -207,7 +207,6 @@ def handle_new_client(user_socket):
             logged_in = login(username)
             if not logged_in:
                 user_socket.sendall((999).to_bytes(4, 'big'))
-                user_socket.close()
                 break
             else:
                 print("{} logged in".format(username), flush=True)
@@ -231,7 +230,7 @@ def start_server(port):
 
     while True:
         client_sock, client_addr = server.accept()
-        client_thread = threading.Thread(target=handle_new_client, args=(client_sock))
+        client_thread = threading.Thread(target=handle_new_client, args=(client_sock, client_addr))
         client_thread.start()
 
 
